@@ -25,7 +25,7 @@ app.post '/', (req, resp) ->
 app.listen port, ->
   console.log 'Listening on port ' + port
 
-fulcrum = new Fulcrum({api_key: constants.fulcrum_api_key, url: 'https://edge.fulcrumapp.com/api/v2/'})
+fulcrum = new Fulcrum({api_key: constants.fulcrum_api_key})
 
 processPayload = (payload) ->
   unless payload.data.form_id is constants.form_id
