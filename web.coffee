@@ -48,10 +48,20 @@ processNewRecord = (record) ->
       console.log "Error from factual: #{error}"
       return
     console.log "Got Factual response: #{JSON.stringify(data)}"
-  factualRequestOptions =
-    uri           : 'https://api.factual.com/t/products-cpg-nutrition'
-    json          : true
-    'KEY'           : constants.factual_api_key
+  filters =
+    '$and': [
+      {
+        upc: {
+          '$eq': record.data.form_values[constants.form_keys.upc]
+        }
+      }
+    ]
+  qs =
+    KEY           : constants.factual_api_key
     include_count : 't'
-    filters       : {'$and': [{upc: {'$eq': record.data.form_values[constants.form_keys.upc]}}]}
+    filters       : filters
+  factualRequestOptions =
+    uri  : 'https://api.factual.com/t/products-cpg-nutrition'
+    json : true
+    qs   : qs
   request(factualRequestOptions, factualResponseCallback)
