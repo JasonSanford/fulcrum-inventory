@@ -1,0 +1,32 @@
+{
+  "name": "fulcrum-inventory",
+  "version": "0.0.0",
+  "description": "Testing Fulcrum bar code scanning and searching UPC codes via Factual",
+  "main": "web.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JasonSanford/fulcrum-inventory.git"
+  },
+  "keywords": [
+    "fulcrum",
+    "upc",
+    "bar code"
+  ],
+  "author": "Jason Sanford",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JasonSanford/fulcrum-inventory/issues"
+  },
+  "homepage": "https://github.com/JasonSanford/fulcrum-inventory",
+  "dependencies": {
+    "express": "~4.9.4",
+    "coffee-script": "~1.8.0",
+    "logfmt": "~1.2.0",
+    "body-parser": "~1.9.0",
+    "request": "~2.44.0",
+    "fulcrum-app": "~0.7.0"
+  }
+}
