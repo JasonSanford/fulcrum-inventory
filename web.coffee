@@ -33,12 +33,25 @@ processPayload = (payload) ->
     console.log 'Ignoring webhook because type was not record.create'
     return
 
-  upc    = payload.data.form_values[constants.form_keys.upc]
   status = payload.data.status
 
   unless status is constants.statuses.NEW
     console.log "Ignoring record because status was not #{constants.status.NEW}"
     return
 
-  console.log 'Ok, ready to do work'
-  console.log JSON.stringify(payload)
+  processNewRecord(payload)
+
+processNewRecord = (record) ->
+  console.log "Processing Record: #{JSON.stringify(record)}"
+  factualResponseCallback = (error, response, data) ->
+    if error
+      console.log "Error from factual: #{error}"
+      return
+    console.log "Got Factual response: #{JSON.stringify(data)}"
+  factualRequestOptions =
+    uri           : 'https://api.factual.com/t/products-cpg-nutrition'
+    json          : true
+    KEY           : constants.factual_api_key
+    include_count : 't'
+    filters       : {'$and': [{upc: {'$eq': record.data.form_values[constants.form_keys.upc]}}]}
+  request(factualRequestOptions, factualResponseCallback)
