@@ -58,7 +58,7 @@ processNewRecord = (webhook_record) ->
     '$and': [
       {
         upc: {
-          '$eq': record.data.form_values[constants.form_keys.upc]
+          '$eq': webhook_record.data.form_values[constants.form_keys.upc]
         }
       }
     ]
