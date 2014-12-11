@@ -2,6 +2,7 @@ express    = require 'express'
 logfmt     = require 'logfmt'
 bodyParser = require 'body-parser'
 request    = require 'request'
+Fulcrum    = require 'fulcrum-app'
 
 constants = require './constants'
 
@@ -24,6 +25,8 @@ app.post '/', (req, resp) ->
 app.listen port, ->
   console.log 'Listening on port ' + port
 
+fulcrum = new Fulcrum({api_key: constants.fulcrum_api_key, url: 'https://edge.fulcrumapp.com/api/v2/'})
+
 processPayload = (payload) ->
   unless payload.data.form_id is constants.form_id
     console.log 'Ignoring webhook because form id'
@@ -41,13 +44,14 @@ processPayload = (payload) ->
 
   processNewRecord(payload)
 
-processNewRecord = (record) ->
+processNewRecord = (webhook_record) ->
   factualResponseCallback = (error, response, data) ->
     if error
       console.log "Error from factual: #{error}"
       return
     if data.response.total_row_count is 0
-      console.log "No Factual records found for record: #{record.id}"
+      console.log "No Factual records found for record: #{webhook_record.id}"
+      setRecordNotFoundInFactual(webhook_record)
     else
       console.log "Got Factual response: #{JSON.stringify(data)}"
   filters =
@@ -67,3 +71,20 @@ processNewRecord = (record) ->
     json : true
     qs   : qs
   request(factualRequestOptions, factualResponseCallback)
+
+setRecordNotFoundInFactual = (webhook_record) ->
+  fulcrumRecordFoundCallback = (error, api_record) ->
+    if error
+      console.log "Error finding Fulcrum record: #{error}"
+      return
+
+    fulcrumRecordUpdatedCallback = (error, api_record) ->
+      if error
+        console.log "Error updating Fulcrum record: #{error}"
+        return
+      console.log "Updated Fulcrum record: #{api_record.record.id}"
+
+    api_record.record.status = constants.statuses.NOT_FOUND
+    fulcrum.records.update(api_record.record.id, api_record, fulcrumRecordUpdatedCallback)
+
+  fulcrum.records.find(webhook_record.id, fulcrumRecordFoundCallback)

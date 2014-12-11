@@ -12,5 +12,6 @@ constants =
   form_keys       : form_keys
   statuses        : statuses
   factual_api_key : process.env.FACTUAL_API_KEY
+  fulcrum_api_key : process.env.FULCRUM_API_KEY
 
 module.exports = constants
