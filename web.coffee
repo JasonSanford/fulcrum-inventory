@@ -42,12 +42,14 @@ processPayload = (payload) ->
   processNewRecord(payload)
 
 processNewRecord = (record) ->
-  console.log "Processing Record: #{JSON.stringify(record)}"
   factualResponseCallback = (error, response, data) ->
     if error
       console.log "Error from factual: #{error}"
       return
-    console.log "Got Factual response: #{JSON.stringify(data)}"
+    if data.response.total_row_count is 0
+      console.log "No Factual records found for record: #{record.id}"
+    else
+      console.log "Got Factual response: #{JSON.stringify(data)}"
   filters =
     '$and': [
       {
