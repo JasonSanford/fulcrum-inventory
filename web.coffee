@@ -50,7 +50,7 @@ processNewRecord = (webhook_record) ->
       console.log "Error from factual: #{error}"
       return
     if data.response.total_row_count is 0
-      console.log "No Factual records found for record: #{webhook_record.id}"
+      console.log "No Factual records found for record: #{webhook_record.data.id}"
       setRecordNotFoundInFactual(webhook_record)
     else
       console.log "Got Factual response: #{JSON.stringify(data)}"
@@ -87,4 +87,4 @@ setRecordNotFoundInFactual = (webhook_record) ->
     api_record.record.status = constants.statuses.NOT_FOUND
     fulcrum.records.update(api_record.record.id, api_record, fulcrumRecordUpdatedCallback)
 
-  fulcrum.records.find(webhook_record.id, fulcrumRecordFoundCallback)
+  fulcrum.records.find(webhook_record.data.id, fulcrumRecordFoundCallback)
