@@ -54,6 +54,7 @@ processNewRecord = (webhook_record) ->
       setRecordNotFoundInFactual(webhook_record)
     else
       console.log "Got Factual response: #{JSON.stringify(data)}"
+      setRecordFoundinFactual(webhook_record, data)
   filters =
     '$and': [
       {
@@ -85,6 +86,24 @@ setRecordNotFoundInFactual = (webhook_record) ->
       console.log "Updated Fulcrum record: #{api_record.record.id}"
 
     api_record.record.status = constants.statuses.NOT_FOUND
+    fulcrum.records.update(api_record.record.id, api_record, fulcrumRecordUpdatedCallback)
+
+  fulcrum.records.find(webhook_record.data.id, fulcrumRecordFoundCallback)
+
+setRecordFoundinFactual = (webhook_record, factual_data) ->
+  fulcrumRecordFoundCallback = (error, api_record) ->
+    if error
+      console.log "Error finding Fulcrum record: #{error}"
+      return
+
+    fulcrumRecordUpdatedCallback = (error, api_record) ->
+      if error
+        console.log "Error updating Fulcrum record: #{error}"
+        return
+      console.log "Updated Fulcrum record: #{api_record.record.id}"
+
+    api_record.record.status = constants.statuses.FOUND
+    api_record.record.form_values[constants.form_keys.name] = factual_data.response.data[0].product_name
     fulcrum.records.update(api_record.record.id, api_record, fulcrumRecordUpdatedCallback)
 
   fulcrum.records.find(webhook_record.data.id, fulcrumRecordFoundCallback)
