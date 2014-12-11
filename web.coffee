@@ -51,7 +51,7 @@ processNewRecord = (record) ->
   factualRequestOptions =
     uri           : 'https://api.factual.com/t/products-cpg-nutrition'
     json          : true
-    KEY           : constants.factual_api_key
+    'KEY'           : constants.factual_api_key
     include_count : 't'
     filters       : {'$and': [{upc: {'$eq': record.data.form_values[constants.form_keys.upc]}}]}
   request(factualRequestOptions, factualResponseCallback)
