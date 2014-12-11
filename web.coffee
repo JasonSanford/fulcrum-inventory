@@ -36,7 +36,7 @@ processPayload = (payload) ->
   upc    = payload.data.form_values[constants.form_keys.upc]
   status = payload.data.status
 
-  unless status is constants.status.NEW
+  unless status is constants.statuses.NEW
     console.log "Ignoring record because status was not #{constants.status.NEW}"
     return
 
